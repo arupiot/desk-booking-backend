@@ -16,9 +16,11 @@
 const path = require('path');
 const express = require('express');
 const config = require('./config');
+const app = express();
 
 // Added for auth0 routing
 var authRouter = require('./routes/auth');
+
 var emailRouter = require('./routes/email');
 
 // Added for auth0 login
@@ -29,10 +31,6 @@ dotenv.config();
 // Load Passport
 var passport = require('passport');
 var Auth0Strategy = require('passport-auth0');
-
-const app = express();
-
-
 
 app.disable('etag');
 app.set('views', path.join(__dirname, 'views'));
@@ -72,7 +70,7 @@ passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
-// config express-session.   added for auth0 login
+// config express-session.   added for auth0 login, may not be needed
 var sess = {
   secret: '1234',
   cookie: {},
@@ -91,11 +89,8 @@ app.use(passport.session());
 
 passport.use(strategy);
 
-app.use('/', authRouter);
-// Email
-app.use('/', emailRouter);
-
-// Redirect root to /books
+app.use('/', authRouter);// Route for the authentication
+app.use('/', emailRouter);// Email route
 
 // Basic 404 handler
 app.use((req, res) => {

@@ -5,6 +5,7 @@ var router = express.Router();
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Redirect root to /books
 router.get('/email', secured(), (req, res) => {
     console.log('Sending email...', req, res);
     const msg = {
