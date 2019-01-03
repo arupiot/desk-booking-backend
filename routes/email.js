@@ -2,6 +2,9 @@ const express = require('express');
 var secured = require('../lib/middleware/secured');
 var router = express.Router();
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 router.get('/email', secured(), (req, res) => {
     console.log('Sending email...', req, res);
     const msg = {

@@ -21,8 +21,6 @@ const config = require('./config');
 var authRouter = require('./routes/auth');
 var emailRouter = require('./routes/email');
 
-var secured = require('./lib/middleware/secured');
-
 // Added for auth0 login
 var session = require('express-session');
 var dotenv = require('dotenv');// Load environment variables from .env
@@ -34,11 +32,7 @@ var Auth0Strategy = require('passport-auth0');
 
 const app = express();
 
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// Email
-app.use('/', emailRouter);
 
 app.disable('etag');
 app.set('views', path.join(__dirname, 'views'));
@@ -52,8 +46,6 @@ app.use('/api/books', require('./books/api'));
 app.get('/', (req, res) => {
   res.redirect('/books');
 });
-
-
 
 // Configure Passport to use Auth0.    added for auth0 login
 var strategy = new Auth0Strategy(
@@ -71,8 +63,6 @@ var strategy = new Auth0Strategy(
   }
 );
 
-passport.use(strategy);
-
 // You can use this section to keep a smaller payload
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -81,14 +71,6 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user, done) {
   done(null, user);
 });
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use('/', authRouter);
-
-// Redirect root to /books
-
 
 // config express-session.   added for auth0 login
 var sess = {
@@ -103,6 +85,17 @@ if (app.get('env') === 'production') {
 }
 
 app.use(session(sess));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(strategy);
+
+app.use('/', authRouter);
+// Email
+app.use('/', emailRouter);
+
+// Redirect root to /books
 
 // Basic 404 handler
 app.use((req, res) => {
