@@ -19,21 +19,21 @@ const config = require('./config');
 const app = express();
 
 // Added for auth0 routing
-var authRouter = require('./routes/auth');
+// var authRouter = require('./routes/auth');
 
 // CORS middleware to allow the frontend to access /email
 const cors = require ('cors');
 
-var emailRouter = require('./routes/email');
+// var emailRouter = require('./routes/email');
 
-// Added for auth0 login
-var session = require('express-session');
-var dotenv = require('dotenv');// Load environment variables from .env
-dotenv.config();
+// // Added for auth0 login
+// var session = require('express-session');
+// var dotenv = require('dotenv');// Load environment variables from .env
+// dotenv.config();
 
 // Load Passport
-var passport = require('passport');
-var Auth0Strategy = require('passport-auth0');
+// var passport = require('passport');
+// var Auth0Strategy = require('passport-auth0');
 
 // SG mail
 const sgMail = require('@sendgrid/mail');
@@ -47,10 +47,11 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.route('/email').get((req,res) => {
+app.route('/email:email').get((req,res) => {
   console.log('Sending email...', req, res);
+  var email = req.params['email'];
     const msg = {
-      to: 'rory.webber@arup.com',
+      to: email,
       from: 'rory.webber@arupiot.com',
       subject: 'IoT Desk Sign in Notice',
       text: 'Signed in, have you?',
@@ -73,52 +74,56 @@ app.get('/', (req, res) => {
   res.redirect('/books');
 });
 
-// Configure Passport to use Auth0.    added for auth0 login
-var strategy = new Auth0Strategy(
-  {
-    domain: process.env.AUTH0_DOMAIN,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
-  },
-  function (accessToken, refreshToken, extraParams, profile, done) {
-    // accessToken is the token to call Auth0 API (not needed in the most cases)
-    // extraParams.id_token has the JSON Web Token
-    // profile has all the information from the user
-    return done(null, profile);
-  }
-);
+//Most of the rest is commented out, it was used for logging in, keeping it in just in case it becomes usefull later but it should not be needed
 
-// You can use this section to keep a smaller payload
-passport.serializeUser(function (user, done) {
-  done(null, user);
-});
+// // Configure Passport to use Auth0.    added for auth0 login
+// var strategy = new Auth0Strategy(
+//   {
+//     domain: process.env.AUTH0_DOMAIN,
+//     clientID: process.env.AUTH0_CLIENT_ID,
+//     clientSecret: process.env.AUTH0_CLIENT_SECRET,
+//     callbackURL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
+//   },
+//   function (accessToken, refreshToken, extraParams, profile, done) {
+//     // accessToken is the token to call Auth0 API (not needed in the most cases)
+//     // extraParams.id_token has the JSON Web Token
+//     // profile has all the information from the user
+//     return done(null, profile);
+//   }
+// );
 
-passport.deserializeUser(function (user, done) {
-  done(null, user);
-});
+// // You can use this section to keep a smaller payload
+// passport.serializeUser(function (user, done) {
+//   done(null, user);
+// });
 
-// config express-session.   added for auth0 login, may not be needed
-var sess = {
-  secret: '1234',
-  cookie: {},
-  resave: false,
-  saveUninitialized: true
-};// the secret definatly needs to be changed and probably hidden
+// passport.deserializeUser(function (user, done) {
+//   done(null, user);
+// });
 
-if (app.get('env') === 'production') {
-  sess.cookie.secure = true; // serve secure cookies, requires https
-}
+// // config express-session.   added for auth0 login, may not be needed
+// var sess = {
+//   secret: '1234',
+//   cookie: {},
+//   resave: false,
+//   saveUninitialized: true
+// };// the secret definatly needs to be changed and probably hidden
 
-app.use(session(sess));
+// if (app.get('env') === 'production') {
+//   sess.cookie.secure = true; // serve secure cookies, requires https
+// }
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(session(sess));
 
-passport.use(strategy);
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-app.use('/', authRouter);// Route for the authentication
-app.use('/', emailRouter);// Email route
+// passport.use(strategy);
+
+// app.use('/', authRouter);// Route for the authentication
+// app.use('/', emailRouter);// Email route
+
+// This is the end of the stuff that was commented out because it is no longer needed
 
 // Basic 404 handler
 app.use((req, res) => {
