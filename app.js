@@ -21,6 +21,9 @@ const app = express();
 // Added for auth0 routing
 var authRouter = require('./routes/auth');
 
+// CORS middleware to allow the frontend to access /email
+const cors = require ('cors');
+
 var emailRouter = require('./routes/email');
 
 // Added for auth0 login
@@ -31,6 +34,31 @@ dotenv.config();
 // Load Passport
 var passport = require('passport');
 var Auth0Strategy = require('passport-auth0');
+
+// SG mail
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+//CORS
+var corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
+}
+
+app.use(cors(corsOptions));
+
+app.route('/email').get((req,res) => {
+  console.log('Sending email...', req, res);
+    const msg = {
+      to: 'rory.webber@arup.com',
+      from: 'rory.webber@arupiot.com',
+      subject: 'IoT Desk Sign in Notice',
+      text: 'Signed in, have you?',
+      html: '<strong>Signed in, have you?</strong>',
+    };
+    sgMail.send(msg);
+    res.status(200).send('email sent!');
+});
 
 app.disable('etag');
 app.set('views', path.join(__dirname, 'views'));
