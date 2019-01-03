@@ -19,11 +19,12 @@ const config = require('./config');
 
 // Added for auth0 routing
 var authRouter = require('./routes/auth');
+var emailRouter = require('./routes/email');
 
 var secured = require('./lib/middleware/secured');
 
 // Added for auth0 login
-var session = require('express-session');// Not sure if express could be used instead
+var session = require('express-session');
 var dotenv = require('dotenv');// Load environment variables from .env
 dotenv.config();
 
@@ -36,6 +37,8 @@ const app = express();
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// Email
+app.use('/', emailRouter);
 
 app.disable('etag');
 app.set('views', path.join(__dirname, 'views'));
@@ -50,19 +53,7 @@ app.get('/', (req, res) => {
   res.redirect('/books');
 });
 
-// Redirect root to /books
-app.get('/email', secured(), (req, res) => {
-  console.log('Sending email...', req, res);
-  const msg = {
-    to: 'rory.webber@arup.com',
-    from: 'rory.webber@arupiot.com',
-    subject: 'IoT Desk Sign in Notice',
-    text: 'Signed in, have you?',
-    html: '<strong>Signed in, have you?</strong>',
-  };
-  sgMail.send(msg);
-  res.status(200).send('Email sent!');
-});
+
 
 // Configure Passport to use Auth0.    added for auth0 login
 var strategy = new Auth0Strategy(
@@ -70,8 +61,7 @@ var strategy = new Auth0Strategy(
     domain: process.env.AUTH0_DOMAIN,
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-    callbackURL:
-      process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
+    callbackURL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
   },
   function (accessToken, refreshToken, extraParams, profile, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
@@ -96,6 +86,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', authRouter);
+
+// Redirect root to /books
+
 
 // config express-session.   added for auth0 login
 var sess = {
