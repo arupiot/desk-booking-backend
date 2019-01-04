@@ -28,10 +28,12 @@ const cors = require ('cors');
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const bodyParser = require('body-parser');
+const jwtAuthz = require('express-jwt-authz');
+const checkScopes = jwtAuthz(['post:email']);
 
 // // Added for auth0 login
 // var session = require('express-session');
-var dotenv = require('dotenv');// Load environment variables from .env
+var dotenv = require('dotenv');// Load environment variables from .env, may eventually change all the env variables to be in config later
 dotenv.config();
 
 // Load Passport
@@ -63,7 +65,7 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: 'heeps://angular-authentication.eu.auth0.com/.well-known/jwks.json'
+    jwksUri: 'https://angular-authentication.eu.auth0.com/.well-known/jwks.json'
   }),
 
   // Validate the audience and the issuer
@@ -73,18 +75,20 @@ const checkJwt = jwt({
 });
 
 // Email endpoint and api
-app.post('/email', checkJwt, function(req,res){
+app.post('/email', checkJwt, checkScopes, function(req,res){
   console.log('Sending email...', req, res);
-  var email = req.params['email'];
+  var email = 'rorywebber1000@gmail.com'//req.params['email'];
     const msg = {
       to: email,
-      from: 'rory.webber@arupiot.com',
+      from: 'rory.webber@arup.com',
       subject: 'IoT Desk Sign in Notice',
       text: 'Signed in, have you?',
       html: '<strong>Signed in, have you?</strong>',
     };
     sgMail.send(msg);
-    res.status(200).send({message: 'email sent!'});
+    res.status(200).send('email sent!');
+    console.log();
+    console.log(req.headers);
 });
 
 app.disable('etag');
