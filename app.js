@@ -24,12 +24,15 @@ const app = express();
 // CORS middleware to allow the frontend to access /email
 const cors = require ('cors');
 
-// var emailRouter = require('./routes/email');
+// jwt middleware for auth0 authorization
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+const bodyParser = require('body-parser');
 
 // // Added for auth0 login
 // var session = require('express-session');
-// var dotenv = require('dotenv');// Load environment variables from .env
-// dotenv.config();
+var dotenv = require('dotenv');// Load environment variables from .env
+dotenv.config();
 
 // Load Passport
 // var passport = require('passport');
@@ -39,6 +42,12 @@ const cors = require ('cors');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+// enable the use of request body parsing middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
 //CORS
 var corsOptions = {
   origin: 'http://localhost:4200',
@@ -47,7 +56,24 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.route('/email:email').get((req,res) => {
+// Middleware for checking JWT for auth0 authentication
+const checkJwt = jwt({
+  // Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: 'heeps://angular-authentication.eu.auth0.com/.well-known/jwks.json'
+  }),
+
+  // Validate the audience and the issuer
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: 'https://angular-authentication.eu.auth0.com/',
+  algorithms: ['RS256']
+});
+
+// Email endpoint and api
+app.post('/email', checkJwt, function(req,res){
   console.log('Sending email...', req, res);
   var email = req.params['email'];
     const msg = {
@@ -58,7 +84,7 @@ app.route('/email:email').get((req,res) => {
       html: '<strong>Signed in, have you?</strong>',
     };
     sgMail.send(msg);
-    res.status(200).send('email sent!');
+    res.status(200).send({message: 'email sent!'});
 });
 
 app.disable('etag');
@@ -73,57 +99,6 @@ app.use('/api/books', require('./books/api'));
 app.get('/', (req, res) => {
   res.redirect('/books');
 });
-
-//Most of the rest is commented out, it was used for logging in, keeping it in just in case it becomes usefull later but it should not be needed
-
-// // Configure Passport to use Auth0.    added for auth0 login
-// var strategy = new Auth0Strategy(
-//   {
-//     domain: process.env.AUTH0_DOMAIN,
-//     clientID: process.env.AUTH0_CLIENT_ID,
-//     clientSecret: process.env.AUTH0_CLIENT_SECRET,
-//     callbackURL: process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
-//   },
-//   function (accessToken, refreshToken, extraParams, profile, done) {
-//     // accessToken is the token to call Auth0 API (not needed in the most cases)
-//     // extraParams.id_token has the JSON Web Token
-//     // profile has all the information from the user
-//     return done(null, profile);
-//   }
-// );
-
-// // You can use this section to keep a smaller payload
-// passport.serializeUser(function (user, done) {
-//   done(null, user);
-// });
-
-// passport.deserializeUser(function (user, done) {
-//   done(null, user);
-// });
-
-// // config express-session.   added for auth0 login, may not be needed
-// var sess = {
-//   secret: '1234',
-//   cookie: {},
-//   resave: false,
-//   saveUninitialized: true
-// };// the secret definatly needs to be changed and probably hidden
-
-// if (app.get('env') === 'production') {
-//   sess.cookie.secure = true; // serve secure cookies, requires https
-// }
-
-// app.use(session(sess));
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// passport.use(strategy);
-
-// app.use('/', authRouter);// Route for the authentication
-// app.use('/', emailRouter);// Email route
-
-// This is the end of the stuff that was commented out because it is no longer needed
 
 // Basic 404 handler
 app.use((req, res) => {
