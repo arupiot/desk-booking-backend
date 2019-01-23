@@ -76,19 +76,22 @@ const checkJwt = jwt({
 
 // Email endpoint and api
 app.post('/email', checkJwt, checkScopes, function(req,res){
-  console.log('Sending email...', req, res);
-  var email = 'rorywebber1000@gmail.com'//req.params['email'];
+  // console.log('Sending email...', req, res);
+  console.log(req.body.emails)
+  console.log(req.params['email'])
+  var emails = req.body.emails;
     const msg = {
-      to: email,
-      from: 'rory.webber@arup.com',
+      to: [emails['email1'], emails['email2']],
+      from: 'jason.brewer@arup.com',
       subject: 'IoT Desk Sign in Notice',
       text: 'Signed in, have you?',
-      html: '<strong>Signed in, have you?</strong>',
+      html: '<strong>Signed in, have you? YEAH YOU HAVE</strong>',
     };
     sgMail.send(msg);
+    console.log('email sent!')
     res.status(200).send('email sent!');
-    console.log();
-    console.log(req.headers);
+    // console.log();
+    // console.log(req.headers);
 });
 
 app.disable('etag');
