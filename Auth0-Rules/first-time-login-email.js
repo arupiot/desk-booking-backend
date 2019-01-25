@@ -1,4 +1,4 @@
-function(user, context, callback) {
+function (user, context, callback) {
     user.app_metadata = user.app_metadata || {};
     if (!user.app_metadata.signedUp) {
       return callback(null, user, context);
