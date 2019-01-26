@@ -26,12 +26,12 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 /**
- * GET /api/books
+ * GET /api/desks
  *
- * Retrieve a page of books (up to ten at a time).
+ * Retrieve a page of desks (up to ten at a time).
  */
 router.get('/', (req, res, next) => {
-  getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
@@ -44,9 +44,9 @@ router.get('/', (req, res, next) => {
 });
 
 /**
- * POST /api/books
+ * POST /api/desks
  *
- * Create a new book. And also send an email to yrself...
+ * Create a new desk
  * 
  * 
  */
@@ -61,12 +61,12 @@ router.post('/', (req, res, next) => {
 });
 
 /**
- * GET /api/books/:id
+ * GET /api/desks/:id
  *
- * Retrieve a book.
+ * Retrieve a desk.
  */
-router.get('/:book', (req, res, next) => {
-  getModel().read(req.params.book, (err, entity) => {
+router.get('/:desk', (req, res, next) => {
+  getModel().read(req.params.desk, (err, entity) => {
     if (err) {
       next(err);
       return;
@@ -76,12 +76,12 @@ router.get('/:book', (req, res, next) => {
 });
 
 /**
- * PUT /api/books/:id
+ * PUT /api/desks/:id
  *
- * Update a book.
+ * Update a desk.
  */
-router.put('/:book', (req, res, next) => {
-  getModel().update(req.params.book, req.body, (err, entity) => {
+router.put('/:desk', (req, res, next) => {
+  getModel().update(req.params.desk, req.body, (err, entity) => {
     if (err) {
       next(err);
       return;
@@ -91,12 +91,12 @@ router.put('/:book', (req, res, next) => {
 });
 
 /**
- * DELETE /api/books/:id
+ * DELETE /api/desks/:id
  *
- * Delete a book.
+ * Delete a desk.
  */
-router.delete('/:book', (req, res, next) => {
-  getModel().delete(req.params.book, (err) => {
+router.delete('/:desk', (req, res, next) => {
+  getModel().delete(req.params.desk, (err) => {
     if (err) {
       next(err);
       return;
@@ -106,7 +106,7 @@ router.delete('/:book', (req, res, next) => {
 });
 
 /**
- * Errors on "/api/books/*" routes.
+ * Errors on "/api/desks/*" routes.
  */
 router.use((err, req, res, next) => {
   // Format error and forward to generic error handler for logging and
