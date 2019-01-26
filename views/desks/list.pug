@@ -22,10 +22,12 @@ block content
 
   each desk in desks
     .media
+      p Name:
       a(href=`/desks/${desk.id}`)
         .media-body
-          h4= desk.name
-          p= desk.vacant
+          h4= `${desk.name}`
+          p Booked?
+          p= `${desk.booked}`
 
   if !desks.length
     p No desks found...

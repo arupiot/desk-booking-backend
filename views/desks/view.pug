@@ -14,7 +14,7 @@
 extends ../base.pug
 
 block content
-  h3 desk
+  h3 Desk
     small
 
   .btn-group
@@ -29,6 +29,6 @@ block content
     .media-body
       h4= desk.name
         | &nbsp;
-        small= desk.vacant
+        small= desk.booked
       h5 Booked by: #{desk.user_email||'(nobody today!)'}
       p= desk.sign_in_time
