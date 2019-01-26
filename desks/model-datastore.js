@@ -20,7 +20,7 @@ const config = require('../config');
 const ds = Datastore({
   projectId: config.get('GCLOUD_PROJECT')
 });
-const kind = 'Book';
+const kind = 'Desk';
 // [END config]
 
 // Translates from Datastore's entity format to
@@ -91,7 +91,7 @@ function toDatastore (obj, nonIndexed) {
 function list (limit, token, cb) {
   const q = ds.createQuery([kind])
     .limit(limit)
-    .order('title')
+    .order('name')
     .start(token);
 
   ds.runQuery(q, (err, entities, nextQuery) => {
@@ -119,7 +119,7 @@ function update (id, data, cb) {
 
   const entity = {
     key: key,
-    data: toDatastore(data, ['description'])
+    data: toDatastore(data, ['name'])
   };
 
   ds.save(

@@ -100,11 +100,11 @@ app.set('view engine', 'pug');
 app.set('trust proxy', true);
 
 // Books
-app.use('/books', require('./books/crud'));
-app.use('/api/books', require('./books/api'));
+app.use('/desks', require('./desks/crud'));
+app.use('/api/desks', require('./desks/api'));
 
 app.get('/', (req, res) => {
-  res.redirect('/books');
+  res.redirect('/desks');
 });
 
 // Basic 404 handler
@@ -118,7 +118,7 @@ app.use((err, req, res, next) => {
   console.error(err);
   // If our routes specified a specific response, then send that. Otherwise,
   // send a generic message so as not to leak anything.
-  res.status(500).send(err.response || 'Something broke!');
+  res.status(500).send(err.response || 'Something went horribly wrong!');
 });
 
 if (module === require.main) {
