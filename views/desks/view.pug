@@ -30,5 +30,5 @@ block content
       h4= desk.name
         | &nbsp;
         small= desk.vacant
-      h5 By #{desk.user_email||'unknown'}
+      h5 Booked by: #{desk.user_email||'(nobody today!)'}
       p= desk.sign_in_time
