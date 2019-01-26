@@ -32,41 +32,42 @@ router.use((req, res, next) => {
 });
 
 /**
- * GET /books
+ * GET /desks
  *
- * Display a page of books (up to ten at a time).
+ * Display a page of desks (up to ten at a time).
  */
 router.get('/', (req, res, next) => {
-  getModel().list(10, req.query.pageToken, (err, entities, cursor) => {
+  getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
     if (err) {
       next(err);
       return;
     }
-    res.render('books/list.pug', {
-      books: entities,
+    
+    res.render('desks/list.pug', {
+      desks: entities,
       nextPageToken: cursor
     });
   });
 });
 
 /**
- * GET /books/add
+ * GET /desks/add
  *
- * Display a form for creating a book.
+ * Display a form for creating a desk.
  */
 // [START add_get]
 router.get('/add', (req, res) => {
-  res.render('books/form.pug', {
-    book: {},
+  res.render('desks/form.pug', {
+    desk: {},
     action: 'Add'
   });
 });
 // [END add_get]
 
 /**
- * POST /books/add
+ * POST /desks/add
  *
- * Create a book.
+ * Create a desk.
  */
 // [START add_post]
 router.post('/add', (req, res, next) => {
@@ -84,32 +85,32 @@ router.post('/add', (req, res, next) => {
 // [END add_post]
 
 /**
- * GET /books/:id/edit
+ * GET /desks/:id/edit
  *
- * Display a book for editing.
+ * Display a desk for editing.
  */
-router.get('/:book/edit', (req, res, next) => {
-  getModel().read(req.params.book, (err, entity) => {
+router.get('/:desk/edit', (req, res, next) => {
+  getModel().read(req.params.desk, (err, entity) => {
     if (err) {
       next(err);
       return;
     }
-    res.render('books/form.pug', {
-      book: entity,
+    res.render('desks/form.pug', {
+      desk: entity,
       action: 'Edit'
     });
   });
 });
 
 /**
- * POST /books/:id/edit
+ * POST /desks/:id/edit
  *
- * Update a book.
+ * Update a desk.
  */
-router.post('/:book/edit', (req, res, next) => {
+router.post('/:desk/edit', (req, res, next) => {
   const data = req.body;
 
-  getModel().update(req.params.book, data, (err, savedData) => {
+  getModel().update(req.params.desk, data, (err, savedData) => {
     if (err) {
       next(err);
       return;
@@ -119,29 +120,29 @@ router.post('/:book/edit', (req, res, next) => {
 });
 
 /**
- * GET /books/:id
+ * GET /desks/:id
  *
- * Display a book.
+ * Display a desk.
  */
-router.get('/:book', (req, res, next) => {
-  getModel().read(req.params.book, (err, entity) => {
+router.get('/:desk', (req, res, next) => {
+  getModel().read(req.params.desk, (err, entity) => {
     if (err) {
       next(err);
       return;
     }
-    res.render('books/view.pug', {
-      book: entity
+    res.render('desks/view.pug', {
+      desk: entity
     });
   });
 });
 
 /**
- * GET /books/:id/delete
+ * GET /desks/:id/delete
  *
- * Delete a book.
+ * Delete a desk.
  */
-router.get('/:book/delete', (req, res, next) => {
-  getModel().delete(req.params.book, (err) => {
+router.get('/:desk/delete', (req, res, next) => {
+  getModel().delete(req.params.desk, (err) => {
     if (err) {
       next(err);
       return;
@@ -151,7 +152,7 @@ router.get('/:book/delete', (req, res, next) => {
 });
 
 /**
- * Errors on "/books/*" routes.
+ * Errors on "/desks/*" routes.
  */
 router.use((err, req, res, next) => {
   // Format error and forward to generic error handler for logging and
