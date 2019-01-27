@@ -79,13 +79,19 @@ app.post('/email', checkJwt, checkScopes, function(req,res){
   // console.log('Sending email...', req, res);
   console.log(req.body.emails)
   console.log(req.params['email'])
-  var emails = req.body.emails;
+  let emails = req.body.emails;
+  let thisDesk = req.body.desk;
+
     const msg = {
       to: [emails['email1'], emails['email2']],
       from: 'jason.brewer@arup.com',
       subject: 'IoT Desk Sign in Notice',
       text: 'Signed in, have you?',
-      html: '<strong>Signed in, have you? YEAH YOU HAVE</strong>',
+      html: `
+              <strong>Signed in, have you? YEAH YOU HAVE</strong>
+              </br>
+              You have successfully booked: ${thisDesk.name}
+            `,
     };
     sgMail.send(msg);
     console.log('email sent!')
