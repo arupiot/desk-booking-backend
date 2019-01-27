@@ -86,11 +86,26 @@ app.post('/email', checkJwt, checkScopes, function(req,res){
       to: [emails['email1'], emails['email2']],
       from: 'jason.brewer@arup.com',
       subject: 'IoT Desk Sign in Notice',
-      text: 'Signed in, have you?',
+      text: `
+              Hello, you have successfully booked ${thisDesk.name}. Thanks!
+            `,
       html: `
-              <strong>Signed in, have you? YEAH YOU HAVE</strong>
+              <strong>Hello!</strong>
               </br>
-              You have successfully booked: ${thisDesk.name}
+              </br>
+              You have successfully booked me.
+              </br>
+              </br>
+              I'm all booked up until 5:30pm today.
+              </br>
+              </br>
+              You have a great day.
+              </br>
+              </br>
+              All the best,
+              </br>
+              </br>
+              <strong>${thisDesk.name}</strong>
             `,
     };
     sgMail.send(msg);
