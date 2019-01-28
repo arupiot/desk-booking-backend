@@ -33,7 +33,7 @@ const checkScopes = jwtAuthz(['post:email']);
 
 // // Added for auth0 login
 // var session = require('express-session');
-var dotenv = require('dotenv');// Load environment variables from .env, may eventually change all the env variables to be in config later
+var dotenv = require('dotenv'); // Load environment variables from .env, may eventually change all the env variables to be in config later
 dotenv.config();
 
 // Load Passport
@@ -74,24 +74,65 @@ const checkJwt = jwt({
   algorithms: ['RS256']
 });
 
+function getModel () {
+  return require(`./desks/model-${require('./config').get('DATA_BACKEND')}`);
+}
+
 // Email endpoint and api
 app.post('/email', checkJwt, checkScopes, function(req,res){
-  // console.log('Sending email...', req, res);
   console.log(req.body.emails)
   console.log(req.params['email'])
-  var emails = req.body.emails;
+  let emails = req.body.emails;
+  let thisDesk = req.body.desk;
+  let thisDeskID = req.body.desk.id;
+  // remove the desk id so datastore doesn't make a new field
+  // called 'id'
+  delete thisDesk['id']; 
+
+  thisDesk.booked = true;
+  thisDesk.sign_in_time = new Date();
+  thisDesk.sign_out_time = null;
+  thisDesk.user_email = emails['email1'];
+
+  getModel().update(thisDeskID, thisDesk, (err, savedData) => {
+    if (err) {
+      console.log('update error: ', err)
+      return;
+    }
+
+    console.log('updated desk: ', savedData)
+    
     const msg = {
       to: [emails['email1'], emails['email2']],
       from: 'jason.brewer@arup.com',
       subject: 'IoT Desk Sign in Notice',
-      text: 'Signed in, have you?',
-      html: '<strong>Signed in, have you? YEAH YOU HAVE</strong>',
+      text: `
+              Hello, you have successfully booked ${thisDesk.name}. Thanks!
+            `,
+      html: `
+              <strong>Hello!</strong>
+              </br>
+              </br>
+              You have successfully booked me.
+              </br>
+              </br>
+              I'm all booked up until 5:30pm today.
+              </br>
+              </br>
+              You have a great day.
+              </br>
+              </br>
+              All the best,
+              </br>
+              </br>
+              <strong>${thisDesk.name}</strong>
+            `,
     };
     sgMail.send(msg);
     console.log('email sent!')
     res.status(200).send('email sent!');
-    // console.log();
-    // console.log(req.headers);
+
+  });
 });
 
 app.disable('etag');
