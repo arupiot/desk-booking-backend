@@ -50,9 +50,20 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+var whitelist = ['http://localhost:4200', 'https://arup-iot-desk.firebaseapp.com']
+var corsOptions = {
+  
+}
+
 //CORS
 var corsOptions = {
-  origin: 'http://localhost:4200',
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
 }
 
