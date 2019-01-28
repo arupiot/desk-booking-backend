@@ -42,7 +42,7 @@ nconf
     DATA_BACKEND: 'datastore',
 
     // This is the id of your project in the Google Cloud Developers Console.
-    GCLOUD_PROJECT: 'no8-iot-desk-occupancy',
+    GCLOUD_PROJECT: 'arup-iot-desk',
 
     MYSQL_USER: '',
     MYSQL_PASSWORD: '',

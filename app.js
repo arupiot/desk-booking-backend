@@ -50,13 +50,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-//CORS
-var corsOptions = {
-  origin: 'http://localhost:4200',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
-}
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middleware for checking JWT for auth0 authentication
 const checkJwt = jwt({
