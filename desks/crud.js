@@ -34,7 +34,7 @@ router.use((req, res, next) => {
 /**
  * GET /desks
  *
- * Display a page of desks (up to ten at a time).
+ * Display a page of desks (up to thirty at a time).
  */
 router.get('/', (req, res, next) => {
   getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
