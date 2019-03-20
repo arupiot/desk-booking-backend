@@ -105,35 +105,47 @@ function list (limit, token, cb) {
 }
 // [END list]
 
-// Creates a new book or updates an existing book with new data. The provided
-// data is automatically translated into Datastore format. The book will be
+// Creates a new desk or updates an existing desk with new data. The provided
+// data is automatically translated into Datastore format. The desk will be
 // queued for background processing.
 // [START update]
-function update (id, data, cb) {
-  let key;
-  if (id) {
-    key = ds.key([kind, parseInt(id, 10)]);
+
+function update (id, data, bulk, cb) {
+
+  if (bulk) {
+    ds.upsert(
+      bulk,
+      (err) => {
+        cb(err, err ? null : bulk);
+      }
+    );
   } else {
-    key = ds.key(kind);
-  }
-
-  const entity = {
-    key: key,
-    data: toDatastore(data, ['name'])
-  };
-
-  ds.save(
-    entity,
-    (err) => {
-      data.id = entity.key.id;
-      cb(err, err ? null : data);
+    let key;
+    if (id) {
+      key = ds.key([kind, parseInt(id, 10)]);
+    } else {
+      key = ds.key(kind);
     }
-  );
+
+    const entity = {
+      key: key,
+      data: toDatastore(data, ['name'])
+    };
+
+    ds.save(
+      entity,
+      (err) => {
+        data.id = entity.key.id;
+        cb(err, err ? null : data);
+      }
+    );
+  }
+ 
 }
 // [END update]
 
 function create (data, cb) {
-  update(null, data, cb);
+  update(null, data, null, cb);
 }
 
 function read (id, cb) {

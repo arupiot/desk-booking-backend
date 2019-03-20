@@ -105,6 +105,41 @@ router.delete('/:desk', (req, res, next) => {
   });
 });
 
+
+/**
+ * GET api/desks/all/unbook
+ *
+ * Display a page of desks (up to thirty at a time).
+ */
+router.get('/all/unbook', (req, res, next) => {
+
+  getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // set 'booked' in all desks to 'true'
+
+    const updated = entities.map( desk => {
+      desk.booked = false;
+      const unbookedDesk = desk;
+      return unbookedDesk 
+    });
+
+    getModel().update(null, null, updated, (err, savedData) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.status(200).send('done!');
+    });
+    
+  });
+
+  
+});
+
 /**
  * Errors on "/api/desks/*" routes.
  */
