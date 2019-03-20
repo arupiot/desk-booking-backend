@@ -88,7 +88,7 @@ app.post('/email', checkJwt, checkScopes, function(req,res){
   thisDesk.sign_out_time = null;
   thisDesk.user_email = emails['email1'];
 
-  getModel().update(thisDeskID, thisDesk, (err, savedData) => {
+  getModel().update(thisDeskID, thisDesk, null, (err, savedData) => {
     if (err) {
       console.log('update error: ', err)
       return;
