@@ -110,7 +110,7 @@ router.get('/:desk/edit', (req, res, next) => {
 router.post('/:desk/edit', (req, res, next) => {
   const data = req.body;
 
-  getModel().update(req.params.desk, data, (err, savedData) => {
+  getModel().update(req.params.desk, data, null, (err, savedData) => {
     if (err) {
       next(err);
       return;
@@ -123,7 +123,9 @@ router.post('/:desk/edit', (req, res, next) => {
  * GET /desks/:id
  *
  * Display a desk.
+ * 
  */
+
 router.get('/:desk', (req, res, next) => {
   getModel().read(req.params.desk, (err, entity) => {
     if (err) {

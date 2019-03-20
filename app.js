@@ -134,7 +134,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('trust proxy', true);
 
-// Books
+// Desks
 app.use('/desks', require('./desks/crud'));
 app.use('/api/desks', require('./desks/api'));
 
