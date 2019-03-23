@@ -36,6 +36,9 @@ const checkScopes = jwtAuthz(['post:email']);
 var dotenv = require('dotenv'); // Load environment variables from .env, may eventually change all the env variables to be in config later
 dotenv.config();
 
+// scheduler (for unbooking all desks at a regular time every day)
+var schedule = require('node-schedule');
+
 // Load Passport
 // var passport = require('passport');
 // var Auth0Strategy = require('passport-auth0');
@@ -126,6 +129,40 @@ app.post('/email', checkJwt, checkScopes, function(req,res){
     console.log('email sent!')
     res.status(200).send('email sent!');
 
+  });
+});
+
+// unbook all desks at 5:30PM every day
+// https://www.npmjs.com/package/node-schedule
+
+var j = schedule.scheduleJob('30 17 * * *', function() {
+
+  console.log("It's 5:30PM, unbooking all desks!")
+
+  getModel().list(30, null, (err, entities, cursor) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    // set 'booked' in all desks to 'true'
+
+    const updated = entities.map( desk => {
+      desk.booked = false;
+      desk.user_email = '';
+      const unbookedDesk = desk;
+      return unbookedDesk 
+    });
+
+    getModel().update(null, null, updated, (err, savedData) => {
+      if (err) {
+        console.log("Something went horribly wrong with the bulk unbooking...");
+        next(err);
+        return;
+      }
+      console.log("All desks unbooked!");
+    });
+    
   });
 });
 

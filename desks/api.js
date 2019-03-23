@@ -111,6 +111,9 @@ router.delete('/:desk', (req, res, next) => {
  *
  * Display a page of desks (up to thirty at a time).
  */
+
+//  It's definitely a good idea to comment this out for the trial...
+
 router.get('/all/unbook', (req, res, next) => {
 
   getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
@@ -123,6 +126,7 @@ router.get('/all/unbook', (req, res, next) => {
 
     const updated = entities.map( desk => {
       desk.booked = false;
+      desk.user_email = '';
       const unbookedDesk = desk;
       return unbookedDesk 
     });
