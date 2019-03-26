@@ -116,32 +116,45 @@ router.delete('/:desk', (req, res, next) => {
 
 router.get('/all/unbook', (req, res, next) => {
 
-  getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
-    if (err) {
-      next(err);
-      return;
-    }
+  const enabled = false;
 
-    // set 'booked' in all desks to 'true'
-
-    const updated = entities.map( desk => {
-      desk.booked = false;
-      desk.user_email = '';
-      const unbookedDesk = desk;
-      return unbookedDesk 
-    });
-
-    getModel().update(null, null, updated, (err, savedData) => {
+  if (enabled) {
+    getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
       if (err) {
         next(err);
         return;
       }
-      res.status(200).send('done!');
-    });
-    
-  });
-
   
+      // set 'booked' in all desks to 'true'
+  
+      const updated = entities.map( desk => {
+  
+        if (desk.hotdesk) {
+          desk.booked = false;
+          desk.user_email = '';
+        }
+  
+        const unbookedDesk = desk;
+        
+        return unbookedDesk 
+      });
+  
+      getModel().update(null, null, updated, (err, savedData) => {
+        if (err) {
+          next(err);
+          console.log("Something went horribly wrong with the bulk unbooking VIA API...");
+          return;
+        }
+        console.log("All desks unbooked VIA API");
+        res.status(200).send('done!');
+      });
+      
+    });
+  } else {
+    console.log('unbooking endpoint is not enabled...');
+    res.status(200).send('Bulk unbooking endpoint is not enabled, my apologies');
+  }
+
 });
 
 /**

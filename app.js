@@ -148,19 +148,23 @@ var j = schedule.scheduleJob('30 17 * * *', function() {
     // set 'booked' in all desks to 'true'
 
     const updated = entities.map( desk => {
-      desk.booked = false;
-      desk.user_email = '';
+
+      if (desk.hotdesk) {
+        desk.booked = false;
+        desk.user_email = '';
+      }
+
       const unbookedDesk = desk;
       return unbookedDesk 
     });
 
     getModel().update(null, null, updated, (err, savedData) => {
       if (err) {
-        console.log("Something went horribly wrong with the bulk unbooking...");
+        console.log("Something went horribly wrong with the bulk unbooking VIA CRON...");
         next(err);
         return;
       }
-      console.log("All desks unbooked!");
+      console.log("All desks unbooked VIA CRON!");
     });
     
   });
