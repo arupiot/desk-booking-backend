@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-getting-started",
+  "name": "ishiki-backend-admin",
   "version": "1.0.0",
   "description": "End to end sample for running Node.js applications on Google Cloud Platform",
   "repository": "https://github.com/GoogleCloudPlatform/nodejs-getting-started",
