@@ -105,14 +105,61 @@ router.delete('/:desk', (req, res, next) => {
   });
 });
 
+/**
+ * GET api/desks/test/unbook
+ *
+ * To be extended...
+ */
+
+router.get('/test/unbook', (req, res, next) => {
+
+  const enabled = true;
+
+  if (enabled) {
+    getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
+      if (err) {
+        next(err);
+        return;
+      }
+  
+      // set 'booked' in all desks to 'true'
+  
+      const updated = entities.map( desk => {
+  
+        if (desk.name === 'rory_test') {
+          desk.booked = false;
+          desk.user_email = '';
+        }
+  
+        const unbookedDesk = desk;
+        
+        return unbookedDesk 
+      });
+  
+      getModel().update(null, null, updated, (err, savedData) => {
+        if (err) {
+          next(err);
+          console.log("Something went horribly wrong with the test unbooking VIA API...");
+          return;
+        }
+        console.log("test desks unbooked VIA API");
+        res.status(200).send('done!');
+      });
+      
+    });
+  } else {
+    console.log('TEST unbooking endpoint is not enabled...');
+    res.status(200).send('TEST unbooking endpoint is not enabled, my apologies');
+  }
+
+});
+
 
 /**
  * GET api/desks/all/unbook
  *
- * Display a page of desks (up to thirty at a time).
+ * 
  */
-
-//  It's definitely a good idea to comment this out for the trial...
 
 router.get('/all/unbook', (req, res, next) => {
 
