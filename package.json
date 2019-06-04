@@ -1,7 +1,7 @@
 {
   "name": "ishiki-backend-admin",
-  "version": "1.0.0",
-  "description": "End to end sample for running Node.js applications on Google Cloud Platform",
+  "version": "1.1.0",
+  "description": "(Extension of an) End to end sample for running Node.js applications on Google Cloud Platform",
   "repository": "https://github.com/GoogleCloudPlatform/nodejs-getting-started",
   "private": true,
   "scripts": {
