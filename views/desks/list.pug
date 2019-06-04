@@ -14,20 +14,20 @@
 extends ../base.pug
 
 block content
-  h3 Desks
+  h3 All Desks
+  h5 (Booked desks are at the bottom of this page)
 
-  a(href="/desks/add", class='btn btn-success btn-sm')
-    i.glyphicon.glyphicon-plus
-    span  Add desk
+  //- a(href="/desks/add", class='btn btn-success btn-sm')
+  //-   i.glyphicon.glyphicon-plus
+  //-   span  Add desk
 
   each desk in desks
     .media
-      p Name:
-      a(href=`/desks/${desk.id}`)
-        .media-body
-          h4= `${desk.name}`
-          p Booked?
-          p= `${desk.booked}`
+      .desk-card
+        a(href=`/desks/${desk.id}`)
+          .media-body
+            h3= `${desk.name}`
+        p Booked? #{desk.booked} 
 
   if !desks.length
     p No desks found...
