@@ -80,30 +80,30 @@ router.get('/:desk', (req, res, next) => {
  *
  * Update a desk.
  */
-router.put('/:desk', (req, res, next) => {
-  getModel().update(req.params.desk, req.body, (err, entity) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.json(entity);
-  });
-});
+// router.put('/:desk', (req, res, next) => {
+//   getModel().update(req.params.desk, req.body, (err, entity) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     res.json(entity);
+//   });
+// });
 
 /**
  * DELETE /api/desks/:id
  *
  * Delete a desk.
  */
-router.delete('/:desk', (req, res, next) => {
-  getModel().delete(req.params.desk, (err) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.status(200).send('OK');
-  });
-});
+// router.delete('/:desk', (req, res, next) => {
+//   getModel().delete(req.params.desk, (err) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     res.status(200).send('OK');
+//   });
+// });
 
 router.get('/:desk/unbook', (req, res, next) => {
 
