@@ -122,11 +122,11 @@ router.get('/test/unbook', (req, res, next) => {
         return;
       }
   
-      // set 'booked' in all desks to 'true'
+      // set 'booked' in selected desks to 'false'
   
       const updated = entities.map( desk => {
   
-        if (desk.name === 'rory_test') {
+        if (desk.name === 'rory_test' || desk.name === 'lilac-spijkenisse' || desk.name === 'susie-storm') {
           desk.booked = false;
           desk.user_email = '';
         }
