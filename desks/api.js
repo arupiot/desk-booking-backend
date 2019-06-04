@@ -105,6 +105,37 @@ router.delete('/:desk', (req, res, next) => {
   });
 });
 
+router.get('/:desk/unbook', (req, res, next) => {
+
+  const enabled = true;
+
+  if (enabled) {
+    
+    getModel().read(req.params.desk, (err, entity) => {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      entity.booked = false;
+
+      getModel().update(req.params.desk, entity, null, (err, entity) => {
+        if (err) {
+          next(err);
+          return;
+        }
+        res.status(200).send("<h1>" + entity.name + " unbooked!</h1><a href='/' style='font-size: 180%'>&#8592; Back</a>");
+      });
+      
+    });
+
+  } else {
+    console.log('Unbook by desk id is disabled!');
+    res.status(200).send(':desk id unbooking endpoint is not enabled, my apologies');
+  }
+
+});
+
 /**
  * GET api/desks/test/unbook
  *
@@ -113,7 +144,7 @@ router.delete('/:desk', (req, res, next) => {
 
 router.get('/test/unbook', (req, res, next) => {
 
-  const enabled = true;
+  const enabled = false;
 
   if (enabled) {
     getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
