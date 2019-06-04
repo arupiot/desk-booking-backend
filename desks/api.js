@@ -118,6 +118,7 @@ router.get('/:desk/unbook', (req, res, next) => {
       }
 
       entity.booked = false;
+      entity.user_email = null;
 
       getModel().update(req.params.desk, entity, null, (err, entity) => {
         if (err) {
