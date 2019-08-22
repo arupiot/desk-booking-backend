@@ -1,0 +1,10 @@
+.desk-card {
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+   transition: 0.3s;
+   max-width: 18em;
+   border-radius: 5px;
+}
+
+.desk-card p, .desk-card .media-body {
+    padding: 0.8em 0.8em;
+}

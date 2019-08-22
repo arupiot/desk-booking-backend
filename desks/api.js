@@ -80,29 +80,61 @@ router.get('/:desk', (req, res, next) => {
  *
  * Update a desk.
  */
-router.put('/:desk', (req, res, next) => {
-  getModel().update(req.params.desk, req.body, (err, entity) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.json(entity);
-  });
-});
+// router.put('/:desk', (req, res, next) => {
+//   getModel().update(req.params.desk, req.body, (err, entity) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     res.json(entity);
+//   });
+// });
 
 /**
  * DELETE /api/desks/:id
  *
  * Delete a desk.
  */
-router.delete('/:desk', (req, res, next) => {
-  getModel().delete(req.params.desk, (err) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    res.status(200).send('OK');
-  });
+// router.delete('/:desk', (req, res, next) => {
+//   getModel().delete(req.params.desk, (err) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     res.status(200).send('OK');
+//   });
+// });
+
+router.get('/:desk/unbook', (req, res, next) => {
+
+  const enabled = true;
+
+  if (enabled) {
+    
+    getModel().read(req.params.desk, (err, entity) => {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      entity.booked = false;
+      entity.user_email = null;
+
+      getModel().update(req.params.desk, entity, null, (err, entity) => {
+        if (err) {
+          next(err);
+          return;
+        }
+        res.status(200).send("<h1>" + entity.name + " unbooked!</h1><a href='/' style='font-size: 180%'>&#8592; Back</a>");
+      });
+      
+    });
+
+  } else {
+    console.log('Unbook by desk id is disabled!');
+    res.status(200).send(':desk id unbooking endpoint is not enabled, my apologies');
+  }
+
 });
 
 /**
@@ -113,7 +145,7 @@ router.delete('/:desk', (req, res, next) => {
 
 router.get('/test/unbook', (req, res, next) => {
 
-  const enabled = true;
+  const enabled = false;
 
   if (enabled) {
     getModel().list(30, req.query.pageToken, (err, entities, cursor) => {
